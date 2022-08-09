@@ -9,6 +9,7 @@ from flask import Flask, render_template, request, Response, flash, redirect, ur
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
+from jinja2.utils import markupsafe 
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
