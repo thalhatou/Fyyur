@@ -77,20 +77,15 @@ class Artist(db.Model):
     Shows = db.relationship('show')
     venues = db.relationship('Venue',secondary='shows',back_populates='artists')
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
-
+# The Show class has a relationship with the Artist and Venue classes.
 class Show(db.Model):
   __tablename__ = 'shows'
-  id = db.Column(db.integer,primary_key=True)
+  id = db.Column(db.Integer,primary_key=True)
   show_start_time = db.Column(db.DateTime, nullable=False)
-  
-# Creating a relationship between the two tables(Artist & Venue).
   artist = db.relationship('Artist')
-  artist_id = db.Column(db.Integer,db.ForeignKey('artists.id',ondelete='CASCADE',nullable=False))
+  artist_id = db.Column(db.Integer,db.ForeignKey('artists.id',ondelete='CASCADE',),nullable=False)
   venue = db.relationship('Venue')
-  venue_id = db.Column(db.Integer,db.ForeignKey('venues.id',ondelete='CASCADE',nullable=False))
+  venue_id = db.Column(db.Integer,db.ForeignKey('venues.id',ondelete='CASCADE'),nullable=False)
 
   
 #----------------------------------------------------------------------------#
