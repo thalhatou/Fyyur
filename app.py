@@ -13,7 +13,7 @@ from jinja2.utils import markupsafe
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
-from flask_migrate import Flask
+from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 #----------------------------------------------------------------------------#
 # App Config.
@@ -23,7 +23,7 @@ app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-migrate = migrate*(app,db)
+migrate = Migrate(app,db)
 
 
 
@@ -35,7 +35,7 @@ migrate = migrate*(app,db)
 #----------------------------------------------------------------------------#
 
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -45,11 +45,14 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
+    website_link = db.Column(db.String(120))
+    seeking_talent = db.Column(db.Boolean,default=False)
+    seeking_description = db.Column(db.String(600))
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 class Artist(db.Model):
-    __tablename__ = 'Artist'
+    __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -59,11 +62,25 @@ class Artist(db.Model):
     genres = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
+    website_link = db.Column(db.String(120))
+    seeking_venue = db.Column(db.Boolean,default=False)
+    seeking_description = db.Column(db.String(600))
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
 
+class Show(db.Model):
+  __tablename__ = 'shows'
+  id = db.Column(db.integer,primary_key=True)
+  show_start_time = db.Column(db.DateTime, nullable=False)
+  artist = db.relationship('Artist')
+  artist_id = db.Column(db.Integer,db.ForeignKey('artists.id',ondelete='CASCADE'))
+
+  show = db.relationship('Show')
+  show_id = db.Column(db.Integer,db.ForeignKey('Shows.id',ondelete='CASCADE'))
+
+  
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
