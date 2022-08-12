@@ -9,4 +9,7 @@ DEBUG = True
 # Connect to the database
 
 # TODO IMPLEMENT DATABASE URL
-SQLALCHEMY_DATABASE_URI = 'postgresql://usr:7y8a1h64@localhost:5432/fyyurdb'
+SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:7y8a1h64@localhost:5432/fyyurdb'
+
+# *|CURSOR_MARCADOR|*
+SQLALCHEMY_TRACK_MODIFICATIONS  = False;
