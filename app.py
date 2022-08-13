@@ -81,7 +81,7 @@ class Artist(db.Model):
 class Show(db.Model):
   __tablename__ = 'shows'
   id = db.Column(db.Integer,primary_key=True)
-  show_start_time = db.Column(db.DateTime, nullable=False)
+  show_start_time = db.Column(db.DateTime(timezone=True), nullable=False)
   artist = db.relationship('Artist')
   artist_id = db.Column(db.Integer,db.ForeignKey('artists.id',ondelete='CASCADE',),nullable=False)
   venue = db.relationship('Venue')
@@ -118,27 +118,8 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-  data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }]
+  data = Venue.query.fetchall()
+  print(data)
   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
