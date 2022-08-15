@@ -1,19 +1,17 @@
 # Importing the app variable that is a member of the app package. The app variable is a Flask
 # instance, which represents the web application.
 from app import app
-
-# Importing the SQLAlchemy class from the flask_sqlalchemy module.
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timezone
+# TODO: connect to a local postgresql database
+db = SQLAlchemy(app)
+#-----------------------
 
 
-
- #TODO: connect to a local postgresql database
 
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
-
-
 
 
 # The Venue class is a model that represents a venue in the database.
@@ -32,16 +30,15 @@ class Venue(db.Model):
     website_link = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean,default=False)
     seeking_description = db.Column(db.String(600))
-    Shows = db.relationship('show')
-    venues = db.relationship('Venue',secondary='shows',back_populates='venues',lazy='dynamic')
+    shows = db.relationship('Show', backref='venues', lazy=True)    # Can reference show.venue (as well as venue.shows)
 
- # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-
-
+    def __repr__(self):
+        return f'<Venue {self.id} {self.name}>'
+   
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate
 # The Artist class is a model for the artists table in the database. It has the following columns: id,
 # name, city, state, phone, genres, image_link, facebook_link, website_link, seeking_venue, and
-# seeking_description.
+# # seeking_description.
 class Artist(db.Model):
     __tablename__ = 'artists'
 
@@ -56,18 +53,17 @@ class Artist(db.Model):
     website_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean,default=False)
     seeking_description = db.Column(db.String(600))
-    Shows = db.relationship('show')
-    venues = db.relationship('Venue',secondary='shows',back_populates='artists',lazy='dynamic')
+    shows = db.relationship('Show', backref='artists', lazy=True)    # Can reference show.artist (as well as artist.shows)
 
-
-
+    def __repr__(self):
+        return f'<Artist {self.id} {self.name}>'
 
 # The Show class has a relationship with the Artist and Venue classes.
 class Show(db.Model):
   __tablename__ = 'shows'
   id = db.Column(db.Integer,primary_key=True)
-  show_start_time = db.Column(db.DateTime, nullable=False)
-  artist = db.relationship('Artist')
+  show_start_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow, nullable=False)
   artist_id = db.Column(db.Integer,db.ForeignKey('artists.id',ondelete='CASCADE',),nullable=False)
-  venue = db.relationship('Venue')
   venue_id = db.Column(db.Integer,db.ForeignKey('venues.id',ondelete='CASCADE'),nullable=False)
+  def __repr__(self):
+        return f'<Show {self.id} {self.show_start_time} artist_id={artist_id} venue_id={venue_id}>'
