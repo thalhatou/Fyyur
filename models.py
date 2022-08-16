@@ -30,6 +30,7 @@ class Venue(db.Model):
     website_link = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean,default=False)
     seeking_description = db.Column(db.String(600))
+  # Creating a relationship between the Show and Venue tables.
     shows = db.relationship('Show', backref='venues', lazy=True)    # Can reference show.venue (as well as venue.shows)
 
     def __repr__(self):
@@ -53,6 +54,7 @@ class Artist(db.Model):
     website_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean,default=False)
     seeking_description = db.Column(db.String(600))
+   # Creating a relationship between the Show and Artist tables.
     shows = db.relationship('Show', backref='artists', lazy=True)    # Can reference show.artist (as well as artist.shows)
 
     def __repr__(self):
@@ -63,7 +65,9 @@ class Show(db.Model):
   __tablename__ = 'shows'
   id = db.Column(db.Integer,primary_key=True)
   show_start_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+# Creating a foreign key relationship between the Artist and Show tables.
   artist_id = db.Column(db.Integer,db.ForeignKey('artists.id',ondelete='CASCADE',),nullable=False)
+# The above code is creating a foreign key relationship between the Venue and Show tables.
   venue_id = db.Column(db.Integer,db.ForeignKey('venues.id',ondelete='CASCADE'),nullable=False)
   def __repr__(self):
         return f'<Show {self.id} {self.show_start_time} artist_id={artist_id} venue_id={venue_id}>'
