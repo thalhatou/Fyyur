@@ -7,9 +7,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 
 # Connect to the database
-config = {
-'default' : ProductionConfig
-}
+# config = {
+# 'default' : ProductionConfig
+# }
 # TODO IMPLEMENT DATABASE URL
 SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:7y8a1h64@localhost:5432/fyyurdb'
 
