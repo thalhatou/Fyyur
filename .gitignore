@@ -19,12 +19,7 @@ docs/_build/
 __pycache__/
 node_modules/
 
-# Coverage reports
-htmlcov/
-.coverage
-.coverage.*
-*,cover
 
-notes.txt
+
 package-lock.json
 package.json
