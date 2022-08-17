@@ -115,8 +115,26 @@ def show_venue(venue_id):
   # TODO: replace with real venue data from the venues table, using venue_id
 # Getting the venue_id from the database.
   venue_query = Venue.query.get(venue_id)
+
  # Querying the database for all the shows in the database.
   shows = Show.query.all()
+# # The above code is querying the database for all shows that have an artist_id that matches the
+# # artist_id passed in and a start_time that is in the future.
+#   past_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
+#   upcoming_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
+  past_shows = []
+  upcoming_shows = []
+  for show in shows:
+    temp_show = {
+        'artist_id': show.artist_id,
+        # 'artist_name': show.artist.name,
+        # 'artist_image_link': show.artist.image_link,
+        'show_start_time': show.show_start_time.strftime("%m/%d/%Y, %H:%M")
+    }
+    if show.show_start_time <= datetime.now():
+        past_shows.append(temp_show)
+    else:
+        upcoming_shows.append(temp_show)
   filter_shows = [show for show in shows if show.venue_id == venue_id]
   # if it finds a venue with that ID
   if venue_query:
@@ -247,9 +265,9 @@ def show_artist(artist_id):
   # TODO: replace with real artist data from the artist table, using artist_id
   #Getting the artist_id from the database.
   artist_query = Artist.query.get(artist_id)
-  upcoming_shows = []
-  past_shows = []
-  # if it finds a venue with that ID
+  past_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.show_start_time>datetime.now()).all()
+  upcoming_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.show_start_time>datetime.now()).all()
+  # if it finds a artist with that ID
   if artist_query:
     artist_data = artist_query
     data = {
@@ -278,6 +296,7 @@ def edit_artist(artist_id):
   form = ArtistForm()
  # Getting the artist_id from the database.
   artist = Artist.query.get(artist_id)
+# Checking if the artist is not empty. If it is empty, it will redirect to the index page.
   if not artist:
     return redirect(url_for('index'))
   else:
@@ -285,7 +304,6 @@ def edit_artist(artist_id):
   artist={
     "id": artist_id,
     "name": artist.name,
-# The above code is splitting the genres column into a list of genres.
     "genres":artist.genres,
     "city": artist.city,
     "state": artist.state,
@@ -373,7 +391,6 @@ def edit_venue_submission(venue_id):
     db.session.commit()
   except:
     db.session.rollback()
-  
   finally:
     db.session.close()
   return redirect(url_for('show_venue', venue_id=venue_id))

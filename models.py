@@ -31,7 +31,7 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean,default=False)
     seeking_description = db.Column(db.String(600))
   # Creating a relationship between the Show and Venue tables.
-    shows = db.relationship('Show', backref='venues', lazy=True)    # Can reference show.venue (as well as venue.shows)
+    shows = db.relationship('Show', backref='venues',lazy='dynamic')    # Can reference show.venue (as well as venue.shows)
 
     def __repr__(self):
         return f'<Venue {self.id} {self.name}>'
@@ -55,7 +55,7 @@ class Artist(db.Model):
     seeking_venue = db.Column(db.Boolean,default=False)
     seeking_description = db.Column(db.String(600))
    # Creating a relationship between the Show and Artist tables.
-    shows = db.relationship('Show', backref='artists', lazy=True)    # Can reference show.artist (as well as artist.shows)
+    shows = db.relationship('Show', backref='artists', lazy='dynamic')    # Can reference show.artist (as well as artist.shows)
 
     def __repr__(self):
         return f'<Artist {self.id} {self.name}>'
