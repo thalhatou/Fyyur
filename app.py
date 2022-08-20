@@ -114,22 +114,22 @@ def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
 # Getting the venue_id from the database.
-  venue_query = Venue.query.get(venue_id)
+  venue = Venue.query.get(venue_id)
 
  # Querying the database for all the shows in the database.
   shows = Show.query.all()
 # # The above code is querying the database for all shows that have an artist_id that matches the
 # # artist_id passed in and a start_time that is in the future.
-#   past_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
-#   upcoming_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
+  # past_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
+  # upcoming_shows = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
   past_shows = []
-  upcoming_shows = []
-  for show in shows:
+  upcoming_shows = [] 
+  for show in venue.shows:
     temp_show = {
         'artist_id': show.artist_id,
         # 'artist_name': show.artist.name,
         # 'artist_image_link': show.artist.image_link,
-        'show_start_time': show.show_start_time.strftime("%m/%d/%Y, %H:%M")
+        'start_time': show.show_start_time.strftime("%m/%d/%Y, %H:%M")
     }
     if show.show_start_time <= datetime.now():
         past_shows.append(temp_show)
@@ -137,8 +137,8 @@ def show_venue(venue_id):
         upcoming_shows.append(temp_show)
   filter_shows = [show for show in shows if show.venue_id == venue_id]
   # if it finds a venue with that ID
-  if venue_query:
-    venue_data = venue_query
+  if venue:
+    venue_data = venue
     data = {
       "id": venue_data.id, 
       "name": venue_data.name, 
@@ -152,6 +152,10 @@ def show_venue(venue_id):
       "seeking_talent": venue_data.seeking_talent, 
       "seeking_description": venue_data.seeking_description, 
       "image_link": venue_data.image_link, 
+      "upcoming_shows": upcoming_shows,
+      "past_shows": past_shows,
+      "upcoming_shows_count": len(upcoming_shows),
+      "past_shows_count": len(past_shows)
       }
   return render_template('pages/show_venue.html', venue=data)
 
@@ -282,6 +286,10 @@ def show_artist(artist_id):
       "seeking_venue": artist_data.seeking_venue, 
       "seeking_description":artist_data.seeking_description, 
       "image_link": artist_data.image_link, 
+      "upcoming_shows": upcoming_shows,
+     "past_shows": past_shows,
+     "upcoming_shows_count": len(upcoming_shows),
+     "past_shows_count": len(past_shows)
       }
   
   return render_template('pages/show_artist.html', artist=data)
